@@ -1,13 +1,23 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from 'next'
-
-type Data = {
-  name: string
-}
-
-export default function handler(
+import { NextApiRequest, NextApiResponse } from "next";
+const sqlite = require("sqlite");
+const sqlite3 = require("sqlite3");
+export default async function getMessages(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse
 ) {
-  res.status(200).json({ name: 'John Doe' })
+  const db = await sqlite.open({
+    filename: "./database.sqlite",
+    driver: sqlite3.Database,
+  });
+
+  if (req.method === "POST") {
+    const statement = await db.prepare(
+      "INSERT INTO Message(message) VALUES(?)"
+    );
+    const result = statement.run(req.body.message);
+    (await result).finalize();
+  }
+  const message = await db.all("select * from message");
+
+  res.json(message);
 }
