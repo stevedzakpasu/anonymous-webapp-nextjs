@@ -12,7 +12,7 @@ const Messages: NextPage = () => {
       };
 
       const response = await fetch(
-        "http://localhost:3000/api/messages/",
+        "http://localhost:3000/api/get_messages/",
         requestOptions
       );
       const data = await response.json();

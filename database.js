@@ -10,6 +10,8 @@ async function setup() {
 
   const message = await db.all("SELECT * FROM Message");
   console.log(JSON.stringify(message));
+  const user = await db.all("SELECT * FROM User");
+  console.log(JSON.stringify(user));
 }
 
 setup();

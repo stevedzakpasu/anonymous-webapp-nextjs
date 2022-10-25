@@ -16,6 +16,8 @@ export default async function getMessages(
     );
     const result = statement.run(req.body.message);
     (await result).finalize();
+  } else {
+    res.status(405).json({ message: "Only POST" });
   }
   const message = await db.all("select * from message");
 

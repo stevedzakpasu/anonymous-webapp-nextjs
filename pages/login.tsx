@@ -1,19 +1,46 @@
 import type { NextPage } from "next";
 import { useState } from "react";
-import Head from "next/head";
-import Image from "next/image";
-import styles from "../styles/Home.module.css";
+import { useRouter } from "next/router";
 
 const Login: NextPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
+  const submitLogin = async () => {
+    const requestOptions: any = {
+      method: "POST",
+
+      body: JSON.stringify({
+        username: username,
+        password: password,
+      }),
+    };
+
+    const response = await fetch(
+      "http://localhost:3000/api/login/",
+      requestOptions
+    );
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert("Invalid Login Details");
+    } else {
+      localStorage.setItem("access_token", data.access_token);
+      router.push("/messages");
+    }
+  };
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    submitLogin();
+  };
   const handleUsernameChange = (event: any) => {
     setUsername(event.target.value);
   };
   const handlePasswordChange = (event: any) => {
     setPassword(event.target.value);
   };
+
   return (
     <div>
       <div className="bg-white-100 h-screen overflow-hidden flex items-center justify-center">
@@ -50,8 +77,8 @@ const Login: NextPage = () => {
               />
             </div>
             <button
+              onClick={handleSubmit}
               className="bg-gradient-to-b from-gray-700 to-gray-900 font-medium p-2 md:p-4 text-white uppercase w-full"
-              // onClick={handleSubmit}
             >
               LOGIN
             </button>
